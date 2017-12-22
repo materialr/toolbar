@@ -49,6 +49,7 @@ class Toolbar extends React.Component {
   }
   componentWillUnmount() {
     this.componentIsMounted = false;
+    this.toolbarDestroy();
   }
   getClassNames() {
     return this.state.classNames.join(' ');
@@ -110,9 +111,7 @@ class Toolbar extends React.Component {
     }
   }
   updateCssVariablesFirstRow(name, value) {
-    if (this.firstRow) {
-      this.firstRow.style.setProperty(name, value);
-    }
+    this.firstRow.style.setProperty(name, value);
   }
   updateCssVariablesFixedAdjust(name, value) {
     const { fixedAdjustElement } = this.props;
