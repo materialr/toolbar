@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const getClassName = (className, isMenuIcon) => classnames({
-  'material-icons': !isMenuIcon,
-  'mdc-toolbar__icon': true,
+  'material-icons': true,
+  'mdc-toolbar__icon': !isMenuIcon,
   'mdc-toolbar__menu-icon': isMenuIcon,
   [className]: !!className,
 });
