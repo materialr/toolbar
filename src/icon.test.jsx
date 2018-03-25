@@ -42,7 +42,7 @@ test('Icon > Loads the menu icon classNames', () => {
     <Icon icon={ICON} isMenuIcon title={TITLE} />,
     { disableLifecycleMethods: true },
   );
-  const expected = 'mdc-toolbar__icon mdc-toolbar__menu-icon';
+  const expected = 'material-icons mdc-toolbar__menu-icon';
 
   const actual = wrapper.props().className;
 
