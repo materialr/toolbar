@@ -209,6 +209,20 @@ test('Toolbar > Does not update title css variables if \'updateCssVariablesTitle
   expect(true).toBe(true);
 });
 
+test('Toolbar > Recreates the toolbar foundation when the fixed changes', () => {
+  const wrapper = mount(<Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>);
+  const instance = wrapper.instance();
+  const toolbarCreate = jest.fn();
+  const toolbarDestroy = jest.fn();
+  instance.toolbarCreate = toolbarCreate;
+  instance.toolbarDestroy = toolbarDestroy;
+
+  wrapper.setProps({ fixed: true });
+
+  expect(toolbarCreate).toHaveBeenCalledTimes(1);
+  expect(toolbarDestroy).toHaveBeenCalledTimes(1);
+});
+
 test('Toolbar > Recreates the toolbar foundation when the fixed adjust changes', () => {
   const ELEMENT = document.createElement('p');
   const wrapper = mount(<Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>);

@@ -40,9 +40,9 @@ class Toolbar extends React.Component {
     this.setTitle();
     this.toolbarCreate();
   }
-  componentDidUpdate({ fixedAdjustElement }) {
-    const { fixedAdjustElement: currentFixedAdjustElement } = this.props;
-    if (currentFixedAdjustElement !== fixedAdjustElement) {
+  componentDidUpdate({ fixed, fixedAdjustElement }) {
+    const { fixed: currentFixed, fixedAdjustElement: currentFixedAdjustElement } = this.props;
+    if (currentFixed !== fixed || currentFixedAdjustElement !== fixedAdjustElement) {
       this.toolbarDestroy();
       this.toolbarCreate();
     }
