@@ -39,7 +39,7 @@ test('Icon > Loads the icon as a child', () => {
 
 test('Icon > Loads the menu icon classNames', () => {
   const wrapper = shallow(
-    <Icon icon={ICON} isMenuIcon title={TITLE} />,
+    <Icon icon={ICON} menuIcon title={TITLE} />,
     { disableLifecycleMethods: true },
   );
   const expected = 'material-icons mdc-toolbar__menu-icon';
