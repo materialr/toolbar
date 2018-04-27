@@ -17,7 +17,7 @@ test('Section > Loads the default classNames', () => {
 test('Section > Adds additional classNames based on props', () => {
   const CLASS_NAME = 'CLASS_NAME';
   const wrapper = shallow(
-    <Section alignEnd alignStart className={CLASS_NAME} shrikToFit>{CHILDREN}</Section>,
+    <Section alignEnd alignStart className={CLASS_NAME} shrinkToFit>{CHILDREN}</Section>,
     { disableLifecycleMethods: true },
   );
   const expected = 'mdc-toolbar__section mdc-toolbar__section--align-end ' +

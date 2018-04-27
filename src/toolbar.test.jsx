@@ -1,19 +1,13 @@
+import * as toolbar from '@material/toolbar';
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 
-import toolbarFoundation from './foundation';
-import Row from './row';
-import Title from './title';
 import Toolbar from './toolbar';
 
-const CHILDREN = <Row><Title>CHILDREN</Title></Row>;
-const ON_CHANGE = () => 'ON_CHANGE';
+const CHILDREN = <p>CHILDREN</p>;
 
-test('Toolbar > renders default classNames', () => {
-  const wrapper = shallow(
-    <Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>,
-    { disableLifecycleMethods: true },
-  );
+test('Renders the default classNames', () => {
+  const wrapper = shallow(<Toolbar>{CHILDREN}</Toolbar>, { disableLifecycleMethods: true });
   const expected = 'mdc-toolbar';
 
   const actual = wrapper.props().className;
@@ -21,36 +15,66 @@ test('Toolbar > renders default classNames', () => {
   expect(actual).toBe(expected);
 });
 
-test('Toolbar > Adds additional classNames based on props', () => {
+test('Renders additional classNames from props', () => {
   const CLASS_NAME = 'CLASS_NAME';
   const wrapper = shallow(
-    <Toolbar
-      className={CLASS_NAME}
-      fixed
-      fixedLastRowOnly
-      flexible={4}
-      onChange={ON_CHANGE}
-      waterfall
-    >
-      {CHILDREN}
-    </Toolbar>,
+    <Toolbar className={CLASS_NAME}>{CHILDREN}</Toolbar>,
     { disableLifecycleMethods: true },
   );
-  // eslint-disable-next-line prefer-template
-  const expected = 'mdc-toolbar mdc-toolbar--fixed mdc-toolbar--fixed-lastrow-only ' +
-    'mdc-toolbar--waterfall mdc-toolbar--flexible mdc-toolbar--flexible-default-behavior ' +
-      CLASS_NAME;
+  const expected = `mdc-toolbar ${CLASS_NAME}`;
 
   const actual = wrapper.props().className;
 
   expect(actual).toBe(expected);
 });
 
-test('Toolbar > Renders child elements passed in', () => {
+test('Renders a fixed toolbar', () => {
+  const wrapper = shallow(<Toolbar fixed>{CHILDREN}</Toolbar>, { disableLifecycleMethods: true });
+  const expected = 'mdc-toolbar mdc-toolbar--fixed';
+
+  const actual = wrapper.props().className;
+
+  expect(actual).toBe(expected);
+});
+
+test('Renders a fixed last row toolbar', () => {
   const wrapper = shallow(
-    <Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>,
+    <Toolbar fixedLastRowOnly>{CHILDREN}</Toolbar>,
     { disableLifecycleMethods: true },
   );
+  const expected = 'mdc-toolbar mdc-toolbar--fixed mdc-toolbar--fixed-lastrow-only';
+
+  const actual = wrapper.props().className;
+
+  expect(actual).toBe(expected);
+});
+
+test('Renders a flexile toolbar', () => {
+  const wrapper = shallow(
+    <Toolbar flexible={4}>{CHILDREN}</Toolbar>,
+    { disableLifecycleMethods: true },
+  );
+  const expected = 'mdc-toolbar mdc-toolbar--flexible mdc-toolbar--flexible-default-behavior';
+
+  const actual = wrapper.props().className;
+
+  expect(actual).toBe(expected);
+});
+
+test('Renders a waterfall toolbar', () => {
+  const wrapper = shallow(
+    <Toolbar waterfall>{CHILDREN}</Toolbar>,
+    { disableLifecycleMethods: true },
+  );
+  const expected = 'mdc-toolbar mdc-toolbar--fixed mdc-toolbar--waterfall';
+
+  const actual = wrapper.props().className;
+
+  expect(actual).toBe(expected);
+});
+
+test('Renders children elements', () => {
+  const wrapper = shallow(<Toolbar>{CHILDREN}</Toolbar>, { disableLifecycleMethods: true });
   const expected = CHILDREN;
 
   const actual = wrapper.props().children;
@@ -58,182 +82,27 @@ test('Toolbar > Renders child elements passed in', () => {
   expect(actual).toBe(expected);
 });
 
-test('Toolbar > Creates the toolbar foundation', () => {
-  const wrapper = mount(<Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>);
+test('Creates the MDCToolbar component on mount', () => {
+  const MDCToolbar = jest.fn();
+  toolbar.MDCToolbar = MDCToolbar;
+  const wrapper = mount(<Toolbar>{CHILDREN}</Toolbar>);
   const instance = wrapper.instance();
-  const expected = toolbarFoundation({
-    firstRowElement: instance.firstRow,
-    onChange: ON_CHANGE,
-    propClassNames: instance.getClassNamesFromProps().split(' '),
-    rootElement: instance.toolbar,
-    updateClassNames: instance.updateClassNames,
-    updateCssVariables: instance.updateCssVariables,
-    updateCssVariablesFirstRow: instance.updateCssVariablesFirstRow,
-    updateCssVariablesFixedAdjust: instance.updateCssVariablesFixedAdjust,
-    updateCssVariablesTitle: instance.updateCssVariablesTitle,
-  });
-  expected.init();
+  const expected = instance.elementRoot;
 
-  const actual = instance.toolbarFoundation;
+  const actual = MDCToolbar.mock.calls[0][0];
 
-  expect(JSON.stringify(actual)).toEqual(JSON.stringify(expected));
+  expect(actual).toBe(expected);
 });
 
-test('Toolbar > Destroys the toolbar foundation when the component is unmounted', () => {
-  const wrapper = mount(<Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>);
-  const instance = wrapper.instance();
+test('Destroys the MDCToolbar component on unmount', () => {
   const destroy = jest.fn();
-  instance.toolbarFoundation.destroy = destroy;
+  const wrapper = mount(<Toolbar>{CHILDREN}</Toolbar>);
+  const instance = wrapper.instance();
+  const expected = 1;
+  instance.toolbar.destroy = destroy;
 
   wrapper.unmount();
+  const actual = destroy.mock.calls.length;
 
-  expect(destroy).toHaveBeenCalledTimes(1);
-});
-
-test('Toolbar > Updates cssVariables in state when \'updateCssVariables()\' is called', () => {
-  const CSS_VARIABLES = ['CSS_VARIABLE'];
-  const wrapper = mount(<Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>);
-  const instance = wrapper.instance();
-  const expected = CSS_VARIABLES;
-
-  instance.updateCssVariables(CSS_VARIABLES);
-  const actual = instance.state.cssVariables;
-
-  expect(actual).toEqual(expected);
-});
-
-test('Toolbar > Does not update cssVariables in state when \'updateCssVariables()\' is called on an unmounted component', () => {
-  const CSS_VARIABLES = ['CSS_VARIABLE'];
-  const wrapper = mount(<Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>);
-  const instance = wrapper.instance();
-  instance.setState = jest.fn();
-
-  instance.componentIsMounted = false;
-  instance.updateCssVariables(CSS_VARIABLES);
-
-  expect(instance.setState).toHaveBeenCalledTimes(0);
-});
-
-test('Toolbar > Updates classNames in state when \'updateClassNames()\' is called', () => {
-  const CLASS_NAMES = ['CLASS_NAME'];
-  const wrapper = mount(<Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>);
-  const instance = wrapper.instance();
-  const expected = CLASS_NAMES;
-
-  instance.updateClassNames(CLASS_NAMES);
-  const actual = instance.state.classNames;
-
-  expect(actual).toEqual(expected);
-});
-
-test('Toolbar > Does not update classNames in state when \'updateClassNames()\' is called on an unmounted component', () => {
-  const CLASS_NAMES = ['CLASS_NAME'];
-  const wrapper = mount(<Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>);
-  const instance = wrapper.instance();
-  instance.setState = jest.fn();
-
-  instance.componentIsMounted = false;
-  instance.updateClassNames(CLASS_NAMES);
-
-  expect(instance.setState).toHaveBeenCalledTimes(0);
-});
-
-test('Toolbar > Updates first row css variables if \'updateCssVariablesFirstRow\' is called', () => {
-  const NAME = 'NAME';
-  const VALUE = 'VALUE';
-  const wrapper = mount(<Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>);
-  const instance = wrapper.instance();
-  const setProperty = jest.fn();
-  instance.firstRow.style.setProperty = setProperty;
-
-  instance.updateCssVariablesFirstRow(NAME, VALUE);
-
-  expect(setProperty).toHaveBeenCalledWith(NAME, VALUE);
-});
-
-test('Toolbar > Updates fixed adjust css variables if \'updateCssVariablesFixedAdjust\' is called', () => {
-  const ELEMENT = document.createElement('p');
-  const NAME = 'NAME';
-  const VALUE = 'VALUE';
-  const wrapper = mount(
-    <Toolbar
-      fixedAdjustElement={ELEMENT}
-      onChange={ON_CHANGE}
-    >
-      {CHILDREN}
-    </Toolbar>,
-  );
-  const instance = wrapper.instance();
-  const setProperty = jest.fn();
-  instance.props.fixedAdjustElement.style.setProperty = setProperty;
-
-  instance.updateCssVariablesFixedAdjust(NAME, VALUE);
-
-  expect(setProperty).toHaveBeenCalledWith(NAME, VALUE);
-});
-
-test('Toolbar > Does not update fixed adjust css variables if \'updateCssVariablesFixedAdjust\' is called with no element', () => {
-  const NAME = 'NAME';
-  const VALUE = 'VALUE';
-  const wrapper = mount(<Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>);
-  const instance = wrapper.instance();
-
-  instance.updateCssVariablesFixedAdjust(NAME, VALUE);
-
-  // not sure how to test this as the element needs to exist to test on it?
-  expect(true).toBe(true);
-});
-
-test('Toolbar > Updates title css variables if \'updateCssVariablesTitle\' is called', () => {
-  const NAME = 'NAME';
-  const VALUE = 'VALUE';
-  const wrapper = mount(<Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>);
-  const instance = wrapper.instance();
-  const setProperty = jest.fn();
-  instance.title.style.setProperty = setProperty;
-
-  instance.updateCssVariablesTitle(NAME, VALUE);
-
-  expect(setProperty).toHaveBeenCalledWith(NAME, VALUE);
-});
-
-test('Toolbar > Does not update title css variables if \'updateCssVariablesTitle\' is called with no element', () => {
-  const NAME = 'NAME';
-  const VALUE = 'VALUE';
-  const wrapper = mount(<Toolbar onChange={ON_CHANGE}><Row>CHILDREN</Row></Toolbar>);
-  const instance = wrapper.instance();
-
-  instance.updateCssVariablesTitle(NAME, VALUE);
-
-  // not sure how to test this as the element needs to exist to test on it?
-  expect(true).toBe(true);
-});
-
-test('Toolbar > Recreates the toolbar foundation when the fixed changes', () => {
-  const wrapper = mount(<Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>);
-  const instance = wrapper.instance();
-  const toolbarCreate = jest.fn();
-  const toolbarDestroy = jest.fn();
-  instance.toolbarCreate = toolbarCreate;
-  instance.toolbarDestroy = toolbarDestroy;
-
-  wrapper.setProps({ fixed: true });
-
-  expect(toolbarCreate).toHaveBeenCalledTimes(1);
-  expect(toolbarDestroy).toHaveBeenCalledTimes(1);
-});
-
-test('Toolbar > Recreates the toolbar foundation when the fixed adjust changes', () => {
-  const ELEMENT = document.createElement('p');
-  const wrapper = mount(<Toolbar onChange={ON_CHANGE}>{CHILDREN}</Toolbar>);
-  const instance = wrapper.instance();
-  const toolbarCreate = jest.fn();
-  const toolbarDestroy = jest.fn();
-  instance.toolbarCreate = toolbarCreate;
-  instance.toolbarDestroy = toolbarDestroy;
-
-  wrapper.setProps({ fixedAdjustElement: ELEMENT });
-
-  expect(toolbarCreate).toHaveBeenCalledTimes(1);
-  expect(toolbarDestroy).toHaveBeenCalledTimes(1);
+  expect(actual).toBe(expected);
 });
