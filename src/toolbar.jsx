@@ -32,11 +32,23 @@ class Toolbar extends React.Component {
     });
   }
   render() {
-    const { getClassNames, props: { children } } = this;
+    const {
+      getClassNames,
+      props: {
+        children,
+        className,
+        fixed,
+        fixedLastRowOnly,
+        flexible,
+        waterfall,
+        ...props
+      },
+    } = this;
     return (
       <header
         className={getClassNames()}
         ref={(elementRoot) => { this.elementRoot = elementRoot; }}
+        {...props}
       >
         {children}
       </header>

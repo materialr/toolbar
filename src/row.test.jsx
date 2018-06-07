@@ -21,3 +21,13 @@ test('Row > Loads all classNames based on props', () => {
 
   expect(actual).toBe(expected);
 });
+
+test('Row > Passes through additional props', () => {
+  const DATA_QA = 'DATA_QA';
+  const wrapper = shallow(<Row data-qa={DATA_QA}>Row</Row>, { disableLifecycleMethods: true });
+  const expected = DATA_QA;
+
+  const actual = wrapper.props()['data-qa'];
+
+  expect(actual).toBe(expected);
+});

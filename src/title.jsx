@@ -7,8 +7,8 @@ const getClassName = className => classnames({
   [className]: !!className,
 });
 
-const ToolbarTitle = ({ children, className }) =>
-  <span className={getClassName(className)}>{children}</span>;
+const ToolbarTitle = ({ children, className, ...props }) =>
+  <span className={getClassName(className)} {...props}>{children}</span>;
 
 ToolbarTitle.propTypes = {
   children: PropTypes.node.isRequired,
