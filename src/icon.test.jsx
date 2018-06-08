@@ -70,3 +70,16 @@ test('Icon > Loads the title as an aria-label', () => {
 
   expect(actual).toBe(expected);
 });
+
+test('Icon > Passes through additional props', () => {
+  const DATA_QA = 'DATA_QA';
+  const wrapper = shallow(
+    <Icon data-qa={DATA_QA} icon={ICON} title={TITLE} />,
+    { disableLifecycleMethods: true },
+  );
+  const expected = DATA_QA;
+
+  const actual = wrapper.props()['data-qa'];
+
+  expect(actual).toBe(expected);
+});

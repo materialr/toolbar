@@ -10,8 +10,8 @@ const getClassName = (alignEnd, alignStart, className, shrinkToFit) => classname
   [className]: !!className,
 });
 
-const ToolbarSection = ({ alignEnd, alignStart, children, className, shrinkToFit }) => (
-  <section className={getClassName(alignEnd, alignStart, className, shrinkToFit)}>
+const ToolbarSection = ({ alignEnd, alignStart, children, className, shrinkToFit, ...props }) => (
+  <section className={getClassName(alignEnd, alignStart, className, shrinkToFit)} {...props}>
     {children}
   </section>
 );

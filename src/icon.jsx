@@ -9,8 +9,13 @@ const getClassName = (className, menuIcon) => classnames({
   [className]: !!className,
 });
 
-const ToolbarIcon = ({ className, icon, menuIcon, onClick, title }) => (
-  <button aria-label={title} className={getClassName(className, menuIcon)} onClick={onClick}>
+const ToolbarIcon = ({ className, icon, menuIcon, onClick, title, ...props }) => (
+  <button
+    aria-label={title}
+    className={getClassName(className, menuIcon)}
+    onClick={onClick}
+    {...props}
+  >
     {icon}
   </button>
 );

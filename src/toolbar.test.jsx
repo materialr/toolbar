@@ -106,3 +106,16 @@ test('Destroys the MDCToolbar component on unmount', () => {
 
   expect(actual).toBe(expected);
 });
+
+test('Passes through additional props', () => {
+  const DATA_QA = 'DATA_QA';
+  const wrapper = shallow(
+    <Toolbar data-qa={DATA_QA}>{CHILDREN}</Toolbar>,
+    { disableLifecycleMethods: true },
+  );
+  const expected = DATA_QA;
+
+  const actual = wrapper.props()['data-qa'];
+
+  expect(actual).toBe(expected);
+});
